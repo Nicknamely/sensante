@@ -1,7 +1,6 @@
 import os
 
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
@@ -140,7 +139,7 @@ os.makedirs("models", exist_ok=True)
 joblib.dump(model, "models/model.pkl")
 # Verifier la taille du fichier
 size = os.path.getsize("models/model.pkl")
-print(f"Modele sauvegarde : models/model.pkl")
+print("Modele sauvegarde : models/model.pkl")
 print(f"Taille : {size / 1024:.1f} Ko")
 
 # Sauvegarder les encodeurs (indispensables pour les nouvelles donnees)
@@ -197,7 +196,7 @@ diagnostic = model_loaded.predict([features])[0]
 probas = model_loaded.predict_proba([features])[0]
 
 # L'affichage des barres devrait maintenant apparaître !
-print(f"\n--- Resultat du pre-diagnostic ---")
+print("\n--- Resultat du pre-diagnostic ---")
 print(f"Diagnostic : {diagnostic}")
 for classe, proba in zip(model_loaded.classes_, probas):
     bar = "#" * int(proba * 30)
@@ -205,3 +204,12 @@ for classe, proba in zip(model_loaded.classes_, probas):
 
 # Prédire
 diagnostic = model_loaded.predict([features])[0]
+
+# --- Exercice 1 : Importance des features ---
+importances = model.feature_importances_
+
+# On associe le nom des colonnes à leur score et on trie par importance décroissante
+for name, imp in sorted(
+    zip(feature_cols, importances), key=lambda x: x[1], reverse=True
+):
+    print(f"{name:20s}: {imp:.3f}")
