@@ -3,7 +3,7 @@
 # Environnement Python
 __pycache__/
 *.pyc
-venv/
+.venv/
 .env
 
 # Modele ML (trop gros pour GitHub)
