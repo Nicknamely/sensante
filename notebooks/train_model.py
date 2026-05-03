@@ -206,6 +206,8 @@ for classe, proba in zip(model_loaded.classes_, probas):
 diagnostic = model_loaded.predict([features])[0]
 
 # --- Exercice 1 : Importance des features ---
+print("\nImportance des feature \n\n")
+
 importances = model.feature_importances_
 
 # On associe le nom des colonnes à leur score et on trie par importance décroissante
@@ -213,3 +215,73 @@ for name, imp in sorted(
     zip(feature_cols, importances), key=lambda x: x[1], reverse=True
 ):
     print(f"{name:20s}: {imp:.3f}")
+
+#  Exercice 2 : Tests sur patients fictif
+cas_tests = [
+    {
+        "nom": "Enfant sain",
+        "age": 8,
+        "sexe": "M",
+        "temperature": 37.0,
+        "tension_sys": 105,
+        "toux": False,
+        "fatigue": False,
+        "maux_tete": False,
+        "frissons": False,
+        "nausee": False,
+        "region": "Dakar",
+    },
+    {
+        "nom": "Adulte Paludisme",
+        "age": 35,
+        "sexe": "F",
+        "temperature": 40.2,
+        "tension_sys": 115,
+        "toux": False,
+        "fatigue": True,
+        "maux_tete": True,
+        "frissons": True,
+        "nausee": True,
+        "region": "Dakar",
+    },
+    {
+        "nom": "Sénior Grippé",
+        "age": 72,
+        "sexe": "M",
+        "temperature": 38.5,
+        "tension_sys": 140,
+        "toux": True,
+        "fatigue": True,
+        "maux_tete": True,
+        "frissons": False,
+        "nausee": False,
+        "region": "Dakar",
+    },
+]
+
+print("\n Exercice 2 : test sur patient fictif ")
+for p in cas_tests:
+    s_enc = le_sexe_loaded.transform([p["sexe"]])[0]
+    r_enc = le_region_loaded.transform([p["region"]])[0]
+
+    # Création d'un DataFrame pour éviter l'avertissement "UserWarning" sur les noms de colonnes
+    input_data = pd.DataFrame(
+        [
+            [
+                p["age"],
+                s_enc,
+                p["temperature"],
+                p["tension_sys"],
+                int(p["toux"]),
+                int(p["fatigue"]),
+                int(p["maux_tete"]),
+                int(p["frissons"]),
+                int(p["nausee"]),
+                r_enc,
+            ]
+        ],
+        columns=feature_cols,
+    )
+
+    pred = model_loaded.predict(input_data)[0]
+    print(f"Profil : {p['nom']:18s} -> Diagnostic prédit : {pred}")
